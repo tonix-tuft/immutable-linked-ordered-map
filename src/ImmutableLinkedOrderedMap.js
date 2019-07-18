@@ -1,6 +1,6 @@
 /*!
  * ================================
- * ImmutableLinkedOrderedMap v0.6.0
+ * ImmutableLinkedOrderedMap v0.8.0
  * ================================
  */
 
