@@ -44,8 +44,6 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
 /**
  * Factory method to create a new immutable linked ordered map.
  * 
- * This is the only function exposed to the code of the client using this library.
- * 
  * @param {Array} [initialItems] Initial array of items to add to the map (defaults to an empty array).
  *                               Each item of the map MUST be an object with the following shape:
  *                                   
@@ -496,6 +494,10 @@ let creatingNew = false
 
 /**
  * Base class of an immutable linked ordered map.
+ * 
+ * This is the only class exposed to the code of the client using this library.
+ * Internally it uses the factory function "newImmutableLinkedOrderedMap"
+ * to return the correct subclass given the passed options.
  */
 export default class ImmutableLinkedOrderedMap {
 
