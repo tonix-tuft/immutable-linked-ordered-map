@@ -1,6 +1,6 @@
 /*!
  * ================================
- * ImmutableLinkedOrderedMap v0.5.0
+ * ImmutableLinkedOrderedMap v0.6.0
  * ================================
  */
 
@@ -1343,9 +1343,15 @@ function bindMultiwayModeNodes(map, previousNode, nextNode) {
         depth, version
     } = map
 
+    if (!previousNode.next.map[depth]) {
+        previousNode.next.set(depth, new LinkedOrderedMap(), true)
+    }
     const previousNodeDepthMap = previousNode.next.get(depth)
     previousNodeDepthMap.set(version, nextNode, true)
 
+    if (!nextNode.previous.map[depth]) {
+        nextNode.previous.set(depth, new LinkedOrderedMap(), true)
+    }
     const nextNodeDepthMap = nextNode.previous.get(depth)
     nextNodeDepthMap.set(version, previousNode, true)
 }
