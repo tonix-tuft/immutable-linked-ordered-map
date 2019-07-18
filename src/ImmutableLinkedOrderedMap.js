@@ -1,6 +1,6 @@
 /*!
  * ================================
- * ImmutableLinkedOrderedMap v0.8.0
+ * ImmutableLinkedOrderedMap v0.9.0
  * ================================
  */
 
@@ -197,7 +197,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                      which is then used to determine if a map is a descendant of another one during lookup operations.
  * @return {ImmutableLinkedOrderedMap} The new immutable linked ordered map.
  */
-export default function newImmutableLinkedOrderedMap({
+function newImmutableLinkedOrderedMap({
     initialItems = [], keyPropName = DEFAULT_KEY_PROP_NAME, mode = DEFAULT_MAP_MODE
 } = {}) {
     mode = (ImmutableLinkedOrderedMapForMode[mode] && mode) || (mode = DEFAULT_MAP_MODE)
@@ -490,9 +490,33 @@ function addImmutableLinkedOrderedMapOrphanNode(map, key) {
 }
 
 /**
+ * @type {boolean}
+ */
+let creatingNew = false
+
+/**
  * Base class of an immutable linked ordered map.
  */
-class ImmutableLinkedOrderedMap {
+export default class ImmutableLinkedOrderedMap {
+
+    /**
+     * Constructor.
+     * 
+     * @constructor
+     * 
+     * @param {Object} options Options.
+     */
+    constructor(options) {
+        if (!creatingNew) {
+            creatingNew = true
+            const instance = newImmutableLinkedOrderedMap(options)
+            return instance
+        }
+        else {
+            creatingNew = false
+            return this
+        }
+    }
 
     /**
      * Sets a value or multiple values and returns a new updated version of this map
@@ -1271,11 +1295,14 @@ class SingleModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap {
      * Constructor.
      * 
      * @constructor
+     * 
+     * @param {Object} options Options.
      */
-    constructor() {
-        super()
+    constructor(options) {
+        const instance = super(options)
 
-        this.mutationOperationOccurred = false
+        instance.mutationOperationOccurred = false
+        return instance
     }
 
     /**
@@ -1530,11 +1557,14 @@ class MultiwayModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap {
      * Constructor.
      * 
      * @constructor
+     * 
+     * @param {Object} options Options.
      */
-    constructor() {
-        super()
+    constructor(options) {
+        const instance = super(options)
 
-        this.childrenCount = 0
+        instance.childrenCount = 0
+        return instance
     }
 
 }
@@ -1636,11 +1666,14 @@ class LightweightModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap
      * Constructor.
      * 
      * @constructor
+     * 
+     * @param {Object} options Options.
      */
-    constructor() {
-        super()
+    constructor(options) {
+        const instance = super(options)
 
-        this.mutationOperationOccurred = false
+        instance.mutationOperationOccurred = false
+        return instance
     }
 
     /**
