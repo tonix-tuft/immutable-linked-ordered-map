@@ -1,6 +1,6 @@
 {
     "name": "immutable-linked-ordered-map",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "description": "ImmutableLinkedOrderedMap: A JavaScript immutable linked ordered map",
     "main": "src/ImmutableLinkedOrderedMap.js",
     "scripts": {
