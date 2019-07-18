@@ -451,13 +451,20 @@ function mapChange(map, changeLabel, payload = true) {
 }
 
 /**
+ * @type {boolean}
+ */
+let isFork = false
+
+/**
  * Forks a new map from an existent one, hydrating it as needed.
  * 
  * @param {ImmutableLinkedOrderedMap} map The map from which to fork.
  * @return {ImmutableLinkedOrderedMap} The new forked map instance.
  */
 function forkMap(map) {
+    isFork = true
     const newMap = newMapFromMode(map.mode)
+    isFork = false
     hydrate.call(newMap, {
         heapMap: map.heapMap,
         depth: map.depth,
@@ -509,6 +516,9 @@ export default class ImmutableLinkedOrderedMap {
      * @param {Object} options Options.
      */
     constructor(options) {
+        if (isFork) {
+            return
+        }
         if (!creatingNew) {
             creatingNew = true
             const instance = newImmutableLinkedOrderedMap(options)
