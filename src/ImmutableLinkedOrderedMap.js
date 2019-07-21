@@ -565,6 +565,7 @@ export default class ImmutableLinkedOrderedMap {
 
         // Initially, assume that all items exist in the map, therefore there isn't a new version yet.
         let map
+        let justForked = false
         const inserted = []
         const updated = []
         const keysMap = {}
@@ -645,7 +646,7 @@ export default class ImmutableLinkedOrderedMap {
 
             if (!node) {
                 // Key is missing, either a new tail or a new head is needed.
-                map = map || forkMap(this)
+                map = (map && ((justForked = false) || map)) || ((justForked = true) && forkMap(this))
                 const newNode = ImmutableLinkedOrderedMapForMode[map.mode].makeImmutableLinkedOrderedMapNode(map, null, null, key, value)
                 ImmutableLinkedOrderedMapForMode[map.mode].updateHeapMap(map, newNode)
 
@@ -671,10 +672,17 @@ export default class ImmutableLinkedOrderedMap {
             }
             else if (node.element.value !== value) {
                 // Existent key, but value is different.
-                map = map || forkMap(this)
+                map = (map && ((justForked = false)) || map) || ((justForked = true) && forkMap(this))
 
-                const previous = ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(this, node, "previous")
-                const next = ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(this, node, "next")
+                const previous =
+                    (!justForked && ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(map, node, "previous"))
+                    ||
+                    ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(this, node, "previous")
+
+                const next = 
+                    (!justForked && ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(map, node, "next"))
+                    || ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(this, node, "next")
+
                 const newNode = ImmutableLinkedOrderedMapForMode[map.mode].makeImmutableLinkedOrderedMapNode(map, null, null, key, value)
                 ImmutableLinkedOrderedMapForMode[this.mode].updateHeapMap(map, newNode)
 
