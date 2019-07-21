@@ -576,7 +576,7 @@ export default class ImmutableLinkedOrderedMap {
         let valid
         let nodes
         let updateNodesBinding
-        let prependOldTail
+        let appendOperationOldTail
         let lastPrepend
         let loopEnd
 
@@ -598,7 +598,7 @@ export default class ImmutableLinkedOrderedMap {
                     // Store old tail before first appending operation.
                     firstPrepend = false
                     if (map.tail !== null) {
-                        prependOldTail = map.tail
+                        appendOperationOldTail = map.tail
                     }
                     map.tail = newNode
                     ret = false
@@ -616,8 +616,8 @@ export default class ImmutableLinkedOrderedMap {
                     if (map.head === null) {
                         map.head = lastPrepend
                     }
-                    if (prependOldTail) {
-                        ImmutableLinkedOrderedMapForMode[map.mode].bindNodes(map, prependOldTail, lastPrepend)
+                    if (appendOperationOldTail) {
+                        ImmutableLinkedOrderedMapForMode[map.mode].bindNodes(map, appendOperationOldTail, lastPrepend)
                     }
                 }
             }
@@ -674,7 +674,7 @@ export default class ImmutableLinkedOrderedMap {
                 // Existent key, but value is different.
                 map = (map && ((justForked = false)) || map) || ((justForked = true) && forkMap(this))
 
-                const previous =
+                const previous = 
                     (!justForked && ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(map, node, "previous"))
                     ||
                     ImmutableLinkedOrderedMapForMode[map.mode].findMapNodeByDirection(this, node, "previous")
@@ -692,7 +692,7 @@ export default class ImmutableLinkedOrderedMap {
                     ImmutableLinkedOrderedMapForMode[map.mode].bindNodes(map, previous, newNode)
                 }
                 else {
-                    // "node" was a head.
+                    // "node" was a head. Update head.
                     map.head = newNode
                 }
 
@@ -701,8 +701,12 @@ export default class ImmutableLinkedOrderedMap {
                     // There's a next node, "node" is not a tail.
                     ImmutableLinkedOrderedMapForMode[map.mode].bindNodes(map, newNode, next)
                 }
+                else if (appendOperationOldTail) {
+                    // Tail has been updated during the first append operation.
+                    appendOperationOldTail = newNode
+                }
                 else {
-                    // Update tail.
+                    // "node" was a tail. Update tail.
                     map.tail = newNode
                 }
                 
