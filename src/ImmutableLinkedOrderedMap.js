@@ -1181,6 +1181,25 @@ export default class ImmutableLinkedOrderedMap {
         return array
     }
 
+    /**
+     * Returns an array of key/value pairs for each item in the map.
+     * 
+     * @return {Array|undefined} An array of objects where each object has the property "key" (the key of the item in the map)
+     *                           and "value" (the value of the item in the map).
+     *                           If the map is empty, "undefined" will be returned.
+     */
+    keysValues() {
+        const array = new Array(this.length)
+        let i = 0
+        this.forEach((value, key) => {
+            array[i] = {
+                key, value
+            }
+            i++
+        })
+        return array
+    }
+
 }
 
 /* ======================================================================================================== */
@@ -1810,6 +1829,14 @@ class LightweightModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap
     keys() {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("keys")
         return super.keys()
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    keysValues() {
+        this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("keysValues")
+        return super.keysValues()
     }
 
 }
