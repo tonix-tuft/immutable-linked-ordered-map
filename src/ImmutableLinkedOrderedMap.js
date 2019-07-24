@@ -771,6 +771,9 @@ export default class ImmutableLinkedOrderedMap {
                 // Add missing key with new item.
                 map = map || forkMap(this)
 
+                // This needs to happen before updating the heap map so that all modes work!
+                const existentNodeForKey = ImmutableLinkedOrderedMapForMode[this.mode].lookup(this, key)
+
                 const keyValue = keyValueForItem(map.keyPropName, item)
                 key = keyValue.key
                 value = keyValue.value
@@ -778,7 +781,6 @@ export default class ImmutableLinkedOrderedMap {
                 const newNode = ImmutableLinkedOrderedMapForMode[map.mode].makeImmutableLinkedOrderedMapNode(map, null, null, key, value)
                 ImmutableLinkedOrderedMapForMode[map.mode].updateHeapMap(map, newNode)
 
-                const existentNodeForKey = ImmutableLinkedOrderedMapForMode[this.mode].lookup(this, key)
                 if (existentNodeForKey) {
                     hadExistentNodeForKey = true
                     if (existentNodeForKey.element.value !== value) {
@@ -840,8 +842,7 @@ export default class ImmutableLinkedOrderedMap {
                 // Node already exists, it must be overridden in the new map.
                 map = map || forkMap(this)
 
-                const newNode = ImmutableLinkedOrderedMapForMode[map.mode].makeImmutableLinkedOrderedMapNode(map, null, null, key, value)
-                ImmutableLinkedOrderedMapForMode[map.mode].updateHeapMap(map, newNode)
+                const newNode = ImmutableLinkedOrderedMapForMode[map.mode].makeImmutableLinkedOrderedMapNode(map, null, null, key, value)                
 
                 const previous = ImmutableLinkedOrderedMapForMode[this.mode].findMapNodeByDirection(this, node, "previous")
                 const next = ImmutableLinkedOrderedMapForMode[this.mode].findMapNodeByDirection(this, node, "next")
@@ -850,6 +851,7 @@ export default class ImmutableLinkedOrderedMap {
                     // "oldKey" differs from "key".
                     addImmutableLinkedOrderedMapOrphanNode(map, oldKey)
 
+                    // This needs to happen before updating the heap map so that all modes work!
                     const existentNodeForKey = ImmutableLinkedOrderedMapForMode[this.mode].lookup(this, key)
                     if (existentNodeForKey) {
                         hadExistentNodeForKey = true
@@ -913,6 +915,7 @@ export default class ImmutableLinkedOrderedMap {
                     }
                 }
 
+                ImmutableLinkedOrderedMapForMode[map.mode].updateHeapMap(map, newNode)
                 wasUpdated = true
             }
         }
