@@ -1200,6 +1200,28 @@ export default class ImmutableLinkedOrderedMap {
         return array
     }
 
+    /**
+     * Map all the values of this immutable linked ordered map in the order they were added
+     * to a new array.
+     * 
+     * @param {Function} fn A callback to call for each value stored in the map. The callback will receive the value as the first argument
+     *                      and the key as the second argument.
+     *                      It's return value will be used as an element of the returned array for that item.
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reversed order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     * @return {Array} An array with the mapped elements.
+     */
+    map(fn, reversed = false) {
+        const array = new Array(this.length)
+        let i = 0
+        this.forEach((value, key) => {
+            array[i] = fn(value, key)
+            i++
+        }, reversed)
+        return array
+    }
+
 }
 
 /* ======================================================================================================== */
@@ -1837,6 +1859,14 @@ class LightweightModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap
     keysValues() {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("keysValues")
         return super.keysValues()
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    map(fn, reversed = false) {
+        this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("map")
+        return super.map(fn, reversed)
     }
 
 }
