@@ -58,7 +58,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                               In this case the map will map the value "keyPropValue" (the key)
  *                               to the whole item, which will be treated as the value of the map value, e.g.:
  *                               
- *                                   const map = newImmutableLinkedOrderedMap({
+ *                                   const map = new ImmutableLinkedOrderedMap({
  *                                       initialItems: [
  *                                           {
  *                                              id: 1, // <--- "[keyPropName] === 'id'"
@@ -84,7 +84,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                               In this case the map will map the key "key" to the value "value", and "value"
  *                               will be treated as the value of the map for the key "key", e.g.:
  * 
- *                                   const map = newImmutableLinkedOrderedMap({
+ *                                   const map = new ImmutableLinkedOrderedMap({
  *                                       initialItems: [
  *                                           {
  *                                              key1: "abc"
@@ -102,7 +102,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                               Note that if an object with a single property which name is "[keyPropName]" is given,
  *                               then the whole object will be mapped and treated as the map's value, e.g. when "keyPropName === 'id'":
  * 
- *                                   const map = newImmutableLinkedOrderedMap({
+ *                                   const map = new ImmutableLinkedOrderedMap({
  *                                       initialItems: [
  *                                           {
  *                                              id: 123
@@ -126,7 +126,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                      one branch and should cover almost all practical use cases.
  *                      E.g.:
  *                      
- *                          const map = newImmutableLinkedOrderedMap() // "ImmutableLinkedOrderedMapMode.SINGLE" is the default mode.
+ *                          const map = new ImmutableLinkedOrderedMap() // "ImmutableLinkedOrderedMapMode.SINGLE" is the default mode.
  *                          const item = { id: 1, value: "A value" }
  *                          const newMap = map.set(item)
  *                          //const anotherNewMapFromMap = map.set({ id: 2, value: "Another value" }) // This line, if uncommented, will throw an error in single mode, as a mutation operation already occurred on "map"!
@@ -151,7 +151,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                      given a map which tries to lookup its data for a given key.
  *                      E.g.:
  *                      
- *                          const map = newImmutableLinkedOrderedMap({
+ *                          const map = new ImmutableLinkedOrderedMap({
  *                              mode: ImmutableLinkedOrderedMapMode.MULTIWAY
  *                          })
  *                          const newMap = map.set({ id: 1, value: "A value" })
@@ -178,7 +178,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE
  *                      The advantage is that a map in this mode will have the fastest lookups, as in this mode there isn't any version tree.
  *                      E.g.:
  * 
- *                          const map = newImmutableLinkedOrderedMap({
+ *                          const map = new ImmutableLinkedOrderedMap({
  *                              mode: ImmutableLinkedOrderedMapMode.LIGHTWEIGHT
  *                          })
  *                          const item = { id: 1, value: "A value" }
@@ -1029,7 +1029,7 @@ export default class ImmutableLinkedOrderedMap {
             return this
         }
 
-        const map = newImmutableLinkedOrderedMap({
+        const map = new ImmutableLinkedOrderedMap({
             initialItems: [],
             keyPropName: this.keyPropName,
             mode: this.mode,
