@@ -330,6 +330,26 @@ function hydrate({
 }
 
 /**
+ * Returns a node or undefined if the node is an orphan node.
+ * 
+ * @param {Object|undefined} node 
+ * @return {*} The node if it is valid and is not an orphan node, or "undefined" otherwise.
+ */
+function nodeOrUndefined(node) {
+    return node && !isOrphanNode(node) ? node : void 0
+}
+
+/**
+ * Tests if a node is an orphan node or not.
+ * 
+ * @param {Object} node The node to test.
+ * @return {boolean} "true" if the node is orphan, "false" otherwise.
+ */
+function isOrphanNode(node) {
+    return node.isOrphanNode
+}
+
+/**
  * Mutates a map's shared structure (structural sharing) by adding initial items to the map.
  * 
  * @param {ImmutableLinkedOrderedMap} map The map.
@@ -491,6 +511,7 @@ function forkMap(map) {
  */
 function addImmutableLinkedOrderedMapOrphanNode(map, key) {
     const newNode = ImmutableLinkedOrderedMapForMode[map.mode].makeImmutableLinkedOrderedMapNode(map, null, null, key, void 0)
+    newNode.isOrphanNode = true
     ImmutableLinkedOrderedMapForMode[map.mode].updateHeapMap(map, newNode)
 }
 
@@ -1339,7 +1360,7 @@ function lookupSingleMode(map, key) {
             return false
         }
     })
-    return node
+    return nodeOrUndefined(node)
 }
 
 /**
@@ -1586,7 +1607,7 @@ function lookupMultiwayMode(map, key) {
             }
         }
     })
-    return node
+    return nodeOrUndefined(node)
 }
 
 /**
@@ -1663,7 +1684,8 @@ function lookupLightweightMode(map, key) {
     const {
         heapMap
     } = map
-    return heapMap[key]
+    const node = heapMap[key]
+    return nodeOrUndefined(node)
 }
 
 /**
