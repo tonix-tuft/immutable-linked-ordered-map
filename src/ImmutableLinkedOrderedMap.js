@@ -326,6 +326,7 @@ function hydrate({
     this.tail = tail || null
     this.ancestorMap = ancestorMap || null
     this.shouldNextForEachBreak = false
+    this.forEachNextFn = void 0
     this.change = null
 }
 
@@ -1126,9 +1127,10 @@ export default class ImmutableLinkedOrderedMap {
     /**
      * Loop through all the values of this immutable linked ordered map in the order they were added.
      * 
-     * @param {Function} fn A callback to call for each value stored in the map. The callback will receive the value as the first argument
-     *                      and the key as the second argument.
-     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reversed order (starting
+     * @param {Function} fn A callback function to call for each value stored in the map.
+     *                      The callback will receive the value as the first argument, the key as the second argument
+     *                      and the index of the item in the map as the third argument.
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
      *                             from the tail node). The default is to loop through all the elements starting
      *                             from the head node.
      * @return {undefined}
@@ -1138,27 +1140,37 @@ export default class ImmutableLinkedOrderedMap {
         let value
         let current
         let nextNodeDirection
+        let i
+        let updateI
+
         this.shouldNextForEachBreak = false
-        if (reversed) {
+        this.forEachNextFn = void 0
+
+        if (reversed) {            
             current = this.tail
             nextNodeDirection = "previous"
+            i = this.length - 1
+            updateI = () => i--
         }
         else {
             current = this.head
             nextNodeDirection = "next"
+            i = 0
+            updateI = () => i++
         }
 
         while (current) {
             if (!this.shouldNextForEachBreak) {
-                var element = current.element
+                const element = current.element
                 key = element.key
                 value = element.value
-                var result = fn.call(this, value, key)
+                const result = (this.forEachNextFn || fn).call(this, value, key, i)
                 if (result === false) {
                     // Break instantly.
                     break
                 }
                 current = ImmutableLinkedOrderedMapForMode[this.mode].findMapNodeByDirection(this, current, nextNodeDirection)
+                updateI()
             }
             else {
                 break
@@ -1178,41 +1190,52 @@ export default class ImmutableLinkedOrderedMap {
     /**
      * Returns an array of values of this map.
      * 
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     *                             If "reversed" is set to "true", the returned values will be in reverse order.
      * @return {Array} An array of all the values of this map, in the order they were added to the map.
      */
-    values() {
+    values(reversed = false) {
         const array = new Array(this.length)
         let i = 0
         this.forEach(function (value) {
             array[i] = value
             i++
-        })
+        }, reversed)
         return array
     }
 
     /**
      * Returns an array of keys of this map.
      * 
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     *                             If "reversed" is set to "true", the returned keys will be in reverse order.
      * @return {Array} An array of all the keys of this map, in the order they were added to the map.
      */
-    keys() {
+    keys(reversed = false) {
         const array = new Array(this.length)
         let i = 0
         this.forEach(function (value, key) {
             array[i] = key
             i++
-        })
+        }, reversed)
         return array
     }
 
     /**
      * Returns an array of key/value pairs for each item in the map.
      * 
-     * @return {Array|undefined} An array of objects where each object has the property "key" (the key of the item in the map)
-     *                           and "value" (the value of the item in the map).
-     *                           If the map is empty, "undefined" will be returned.
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     *                             If "reversed" is set to "true", the returned key/value pairs will be in reverse order.
+     * @return {Array} An array of objects where each object has the property "key" (the key of the item in the map)
+     *                 and "value" (the value of the item in the map).
      */
-    keysValues() {
+    keysValues(reversed = false) {
         const array = new Array(this.length)
         let i = 0
         this.forEach((value, key) => {
@@ -1220,7 +1243,7 @@ export default class ImmutableLinkedOrderedMap {
                 key, value
             }
             i++
-        })
+        }, reversed)
         return array
     }
 
@@ -1228,22 +1251,135 @@ export default class ImmutableLinkedOrderedMap {
      * Map all the values of this immutable linked ordered map in the order they were added
      * to a new array.
      * 
-     * @param {Function} fn A callback to call for each value stored in the map. The callback will receive the value as the first argument,
-     *                      the key as the second argument, and the index of the item in the map starting from 0 as the third argument.
+     * @param {Function} fn A callback function to call for each value stored in the map.
+     *                      The callback will receive the value as the first argument,
+     *                      the key as the second argument, and the index of the item in the map as the third argument.
      *                      It's return value will be used as an element of the returned array for that item.
-     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reversed order (starting
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
      *                             from the tail node). The default is to loop through all the elements starting
      *                             from the head node.
-     * @return {Array} An array with the mapped elements.
+     *                             If "reversed" is set to "true", the returned mapped values will be in reverse order.
+     * @return {Array} An array with the mapped values.
      */
     map(fn, reversed = false) {
         const array = new Array(this.length)
         let i = 0
-        this.forEach((value, key) => {
-            array[i] = fn(value, key, i)
+        this.forEach((value, key, index) => {
+            array[i] = fn(value, key, index)
             i++
         }, reversed)
         return array
+    }
+
+    /**
+     * Reduce all the values of this immutable linked ordered map to a single output value.
+     * 
+     * @param {Function} fn A callback function to call for each value stored in the map.
+     *                      The callback will receive the accumulator as the first argument,
+     *                      the current value as the second argument, the current value's key as the third argument
+     *                      and the index of the item in the map as the fourth argument.
+     * 
+     *                      It's return value is assigned to the accumulator, whose value is remembered across each iteration
+     *                      throughout the map and ultimately becomes the final, single resulting value.
+     * 
+     *                      The first time the callback is called, accumulator and current value can be one of two values.
+     *                      If "initialValue" is provided in the call to "reduce()", then accumulator will be equal to "initialValue",
+     *                      and the current value will be equal to the first value in the map.
+     *                      If no "initialValue" is provided, then the accumulator will be equal to the first or last value in the map
+     *                      (if "reversed" is either "false" or "true", respectively), and the current value will be equal to the value of
+     *                      the next or previous item (again, if "reversed" is either "false" or "true", respectively).
+     * @param {*} initialValue A value to use as the first argument to the first call of the callback.
+     *                         If no "initialValue" is supplied, the first element in the map will be used and skipped.
+     *                         Calling "reduce()" on an empty map without an initial value will throw a "TypeError".
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     * @return {*} The single value that results from the reduction.
+     */
+    reduce(fn, initialValue, reversed = false) {
+        let hasInitialValue = arguments.length > 1
+        let acc
+        let skipFirst = false
+
+        if (!hasInitialValue) {
+            if (!this.length) {
+                throw new TypeError(`ImmutableLinkedOrderedMap type error: Reduce of empty map with no initial value`)
+            }
+            skipFirst = true
+            acc = (reversed ?
+                    this.last()
+                    :
+                    this.first()
+                ).value
+        }
+        else {
+            acc = initialValue
+        }
+        
+        let accFn = (value, key, index) => {
+            acc = fn(acc, value, key, index)
+        }
+        let overridableFn = function(value, key, index) {
+            this.forEachNextFn = accFn
+            if (skipFirst) {
+                return
+            }
+            accFn(value, key, index)
+        }
+        this.forEach(overridableFn, reversed)
+
+        return acc
+    }
+
+    /**
+     * Filters the values of this immutable linked ordered map returning an array with the filtered values.
+     * 
+     * @param {Function} fn A callback function to call for each value stored in the map.
+     *                      The callback will receive the value as the first argument,
+     *                      the key as the second argument, and the index of the item in the map as the third argument.
+     *                      The values for which the callback returned a falsy value will not be added to the returned
+     *                      array of filtered items.
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     *                             If "reversed" is set to "true", the returned filtered values will be in reverse order.
+     * @return {Array} An array with the filtered values.
+     */
+    filter(fn, reversed = false) {
+        const array = []
+        let i = 0
+        this.forEach((value, key, index) => {
+            const res = fn(value, key, index)
+            if (res) {
+                array[i] = value
+                i++
+            }
+        }, reversed)
+        return array
+    }
+
+    /**
+     * Tests whether all values in the map pass the test implemented by the provided function.
+     * 
+     * @param {Function} fn A callback function to call for each value stored in the map.
+     *                      The callback will receive the value as the first argument, the key as the second argument
+     *                      and the index of the item in the map as the third argument.
+     *                      If the returned value of the callback for a given value is falsy, this method will return "false".
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     * @return {boolean} "true" all values in the map pass the test implemented by the provided callback function, "false" otherwise.
+     */
+    every(fn, reversed = false) {
+        let allTrue = true
+        this.forEach((value, key, index) => {
+            const res = fn(value, key, index)
+            if (!res) {
+                allTrue = false
+                return false
+            }
+        }, reversed)
+        return allTrue
     }
 
 }
@@ -1744,7 +1880,7 @@ function makeLightweightModeImmutableLinkedOrderedMapNode(map, previous, next, k
  * @throws {Error}
  */
 function throwLightweightModeOperationAftermutationOperationOccurredError(operation) {
-    throw new Error(`ImmutableLinkedOrderedMap error: operation "${operation}" is not allowed on a map in lightweight mode on which a mutation operation occurred once.`)
+    throw new Error(`ImmutableLinkedOrderedMap error: Operation "${operation}" is not allowed on a map in lightweight mode on which a mutation operation occurred once.`)
 }
 
 /**
@@ -1865,25 +2001,25 @@ class LightweightModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap
     /**
      * {@inheritdoc}
      */
-    values() {
+    values(reversed = false) {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("values")
-        return super.values()
+        return super.values(reversed)
     }
 
     /**
      * {@inheritdoc}
      */
-    keys() {
+    keys(reversed = false) {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("keys")
-        return super.keys()
+        return super.keys(reversed)
     }
 
     /**
      * {@inheritdoc}
      */
-    keysValues() {
+    keysValues(reversed = false) {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("keysValues")
-        return super.keysValues()
+        return super.keysValues(reversed)
     }
 
     /**
@@ -1892,6 +2028,30 @@ class LightweightModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap
     map(fn, reversed = false) {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("map")
         return super.map(fn, reversed)
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    reduce(fn, initialValue, reversed = false) {
+        this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("reduce")
+        return super.reduce(fn, initialValue, reversed)
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    filter(fn, reversed = false) {
+        this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("filter")
+        return super.filter(fn, reversed)
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    every(fn, reversed = false) {
+        this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("every")
+        return super.every(fn, reversed)
     }
 
 }
@@ -2001,7 +2161,7 @@ LinkedOrderedMap.prototype.get = function (key, returnWholeNode = false) {
  * 
  * @param {Function} f A callback to call for each value stored in the map. The callback will receive the key as the first argument
  *                     and the value as the second argument.
- * @param {boolean} [reversed] An optional boolean indicating whether to loop in reversed order (starting
+ * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
  *                             from the tail node). The default is to loop through all the elements starting
  *                             from the head node.
  * @return {undefined}
@@ -2241,7 +2401,7 @@ LinkedList.prototype.shift = function () {
  *                      Within the function body, this will point to the linked list instance and "this.break()" can be
  *                      called to stop the next iteration.
  *                      Otherwise, if the function returns false, the loop will stop immediately.
- * @param {boolean} [reversed] An optional boolean indicating whether to loop in reversed order (starting
+ * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
  *                             from the tail node). The default is to loop through all the elements starting
  *                             from the head node.
  * @return {undefined}
