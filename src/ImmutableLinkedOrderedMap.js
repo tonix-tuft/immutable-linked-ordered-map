@@ -1364,7 +1364,7 @@ export default class ImmutableLinkedOrderedMap {
      * @param {Function} fn A callback function to call for each value stored in the map.
      *                      The callback will receive the value as the first argument, the key as the second argument
      *                      and the index of the item in the map as the third argument.
-     *                      If the returned value of the callback for a given value is falsy, this method will return "false".
+     *                      If the returned value of the callback for a given value is falsy, this method will instantly return "false".
      * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
      *                             from the tail node). The default is to loop through all the elements starting
      *                             from the head node.
@@ -1380,6 +1380,30 @@ export default class ImmutableLinkedOrderedMap {
             }
         }, reversed)
         return allTrue
+    }
+
+    /**
+     * Tests whether at least one element in the map passes the test implemented by the provided function.
+     * 
+     * @param {Function} fn A callback function to call for each value stored in the map.
+     *                      The callback will receive the value as the first argument, the key as the second argument
+     *                      and the index of the item in the map as the third argument.
+     *                      If the returned value of the callback for a given value is truthy, this method will instantly return "true".
+     * @param {boolean} [reversed] An optional boolean indicating whether to loop in reverse order (starting
+     *                             from the tail node). The default is to loop through all the elements starting
+     *                             from the head node.
+     * @return {boolean} "true" if at least one element passes the test implemented by the provided callback function, "false" otherwise.
+     */
+    some(fn, reversed = false) {
+        let ret = false
+        this.forEach((value, key, index) => {
+            const res = fn(value, key, index)
+            if (res) {
+                ret = true
+                return false
+            }
+        }, reversed)
+        return ret
     }
 
 }
@@ -2052,6 +2076,14 @@ class LightweightModeImmutableLinkedOrderedMap extends ImmutableLinkedOrderedMap
     every(fn, reversed = false) {
         this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("every")
         return super.every(fn, reversed)
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    some(fn, reversed = false) {
+        this.mutationOperationOccurred && throwLightweightModeOperationAftermutationOperationOccurredError("some")
+        return super.some(fn, reversed)
     }
 
 }
