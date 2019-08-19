@@ -23,7 +23,7 @@ const MULTIWAY_MODE_INITIAL_MAP_TREE_DEPTH_VERSION = ""
 /**
  * @type {string}
  */
-const MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR = "@"
+const MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR = "#"
 
 /**
  * @type {Object}
@@ -1779,9 +1779,9 @@ function lookupMultiwayMode(map, key) {
  */
 function forkMultiwayModeMap(ancestorMap, forkedMap) {
     forkedMap.version = !ancestorMap.version.length ?
-        `${++ancestorMap.childrenCount}`
+        `${++ancestorMap.childrenCount}${MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR}`
         :
-        `${ancestorMap.version}${MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR}${++ancestorMap.childrenCount}`
+        `${ancestorMap.version}${++ancestorMap.childrenCount}${MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR}`
     return forkedMap
 }
 
