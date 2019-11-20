@@ -14,9 +14,10 @@
     "url": "git+https://github.com/tonix-tuft/immutable-linked-ordered-map.git"
   },
   "keywords": [
+    "javascript",
+    "js",
     "immutable",
     "data-structure",
-    "javascript",
     "ordered-map",
     "map",
     "linked"
