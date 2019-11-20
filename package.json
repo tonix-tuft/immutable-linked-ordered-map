@@ -1,35 +1,35 @@
 {
-    "name": "immutable-linked-ordered-map",
-    "version": "0.17.2",
-    "description": "ImmutableLinkedOrderedMap: A JavaScript immutable linked ordered map",
-    "main": "src/ImmutableLinkedOrderedMap.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "watch": "WEBPACK_ENV=watch webpack --progress --colors --watch",
-        "build": "WEBPACK_ENV=build webpack"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/tonix-tuft/immutable-linked-ordered-map.git"
-    },
-    "keywords": [
-        "immutable",
-        "data-structure",
-        "javascript",
-        "ordered-map",
-        "map",
-        "linked"
-    ],
-    "author": "Anton Bagdatyev (Tonix-Tuft)",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/tonix-tuft/immutable-linked-ordered-map/issues"
-    },
-    "homepage": "https://github.com/tonix-tuft/immutable-linked-ordered-map#readme",
-    "devDependencies": {
-        "terser-webpack-plugin": "^1.3.0",
-        "uglifyjs-webpack-plugin": "^2.1.3",
-        "webpack": "^4.36.1",
-        "webpack-cli": "^3.3.6"
-    }
+  "name": "immutable-linked-ordered-map",
+  "version": "0.17.2",
+  "description": "ImmutableLinkedOrderedMap: A JavaScript immutable linked ordered map",
+  "main": "src/ImmutableLinkedOrderedMap.js",
+  "scripts": {
+    "test": "echo \"Error: No test specified\" && exit 1",
+    "watch": "WEBPACK_ENV=watch webpack --progress --colors --watch",
+    "build": "WEBPACK_ENV=build webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tonix-tuft/immutable-linked-ordered-map.git"
+  },
+  "keywords": [
+    "immutable",
+    "data-structure",
+    "javascript",
+    "ordered-map",
+    "map",
+    "linked"
+  ],
+  "author": "Anton Bagdatyev (Tonix-Tuft)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tonix-tuft/immutable-linked-ordered-map/issues"
+  },
+  "homepage": "https://github.com/tonix-tuft/immutable-linked-ordered-map#readme",
+  "devDependencies": {
+    "terser-webpack-plugin": "^1.3.0",
+    "uglifyjs-webpack-plugin": "^2.1.3",
+    "webpack": "^4.36.1",
+    "webpack-cli": "^3.3.6"
+  }
 }
