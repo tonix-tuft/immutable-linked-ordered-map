@@ -553,7 +553,7 @@ let creatingNew = false
  * Internally it uses the factory function "newImmutableLinkedOrderedMap"
  * to return the correct subclass given the passed options.
  */
-export default class ImmutableLinkedOrderedMap {
+class ImmutableLinkedOrderedMap {
 
     /**
      * Constructor.
@@ -2546,4 +2546,6 @@ const ImmutableLinkedOrderedMapForMode = {
 
 }
 
+ImmutableLinkedOrderedMap.MODE = ImmutableLinkedOrderedMapMode
+export default ImmutableLinkedOrderedMap
 /* ======================================================================================================== */

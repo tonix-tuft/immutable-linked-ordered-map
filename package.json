@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tonix-tuft/immutable-linked-ordered-map.git"
+    "url": "https://github.com/tonix-tuft/immutable-linked-ordered-map.git"
   },
   "keywords": [
     "javascript",
