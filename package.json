@@ -30,9 +30,8 @@
   "homepage": "https://github.com/tonix-tuft/immutable-linked-ordered-map#readme",
   "devDependencies": {
     "serialize-javascript": "^2.1.2",
-    "terser-webpack-plugin": "^1.4.2",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.41.2",
+    "terser-webpack-plugin": "^1.4.3",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   }
 }
