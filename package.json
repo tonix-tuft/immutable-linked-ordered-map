@@ -5,11 +5,15 @@
   "main": "dist/immutable-linked-ordered-map.js",
   "module": "src/ImmutableLinkedOrderedMap.js",
   "scripts": {
-    "test": "echo \"Error: No test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "WEBPACK_ENV=watch webpack --progress --colors --watch",
     "dev-build": "WEBPACK_ENV=watch webpack --progress --colors",
     "build": "WEBPACK_ENV=build webpack",
-    "publish-minor": "npm run build && npm run dev-build && npm version minor && npm publish && git push && git push --tags"
+    "publish-git": "npm publish && git push && git push --tags",
+    "build-all": "npm run build && npm run dev-build",
+    "publish-patch": "npm run build-all && npm version patch && npm run publish-git",
+    "publish-minor": "npm run build-all && npm version minor && npm run publish-git",
+    "publish-major": "npm run build-all && npm version major && npm run publish-git"
   },
   "repository": {
     "type": "git",
@@ -24,7 +28,7 @@
     "map",
     "linked"
   ],
-  "author": "Anton Bagdatyev (Tonix-Tuft)",
+  "author": "Anton Bagdatyev (Tonix)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/tonix-tuft/immutable-linked-ordered-map/issues"
