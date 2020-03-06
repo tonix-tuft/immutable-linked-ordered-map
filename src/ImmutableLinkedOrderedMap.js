@@ -1669,7 +1669,7 @@ function updateSingleModeHeapMap(map, itemNode) {
   const key = itemNode.element.key;
 
   if (!heapMap[key]) {
-    // Depht map.
+    // Depth map.
     heapMap[key] = new LinkedOrderedMap();
   }
   heapMap[key].set(depth, itemNode, true);
@@ -1906,7 +1906,7 @@ function updateMultiWayModeHeapMap(map, itemNode) {
   const key = itemNode.element.key;
 
   if (!heapMap[key]) {
-    // Depht map.
+    // Depth map.
     heapMap[key] = new LinkedOrderedMap();
   }
   if (!heapMap[key].map[depth]) {
