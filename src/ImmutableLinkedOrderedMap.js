@@ -30,7 +30,7 @@
  */
 
 /**
- * @author Tonix-Tuft <antonytuft@gmail.com>
+ * @author Anton Bagdatyev (Tonix) <antonytuft@gmail.com>
  */
 
 /* ======================================================================================================== */
