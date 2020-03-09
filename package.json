@@ -37,11 +37,14 @@
   "devDependencies": {
     "serialize-javascript": "^2.1.2",
     "terser-webpack-plugin": "^1.4.3",
-    "webpack": "^4.41.5",
+    "webpack": "^4.42.0",
     "webpack-cli": "^3.3.10"
   },
   "files": [
     "dist",
     "src"
-  ]
+  ],
+  "dependencies": {
+    "pigretto": "^2.3.0"
+  }
 }

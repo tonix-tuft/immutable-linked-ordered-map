@@ -35,6 +35,8 @@
 
 /* ======================================================================================================== */
 
+import pigretto, { call, set, get } from "pigretto";
+
 /**
  * @type {string}
  */
@@ -223,14 +225,19 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE;
 function newImmutableLinkedOrderedMap({
   initialItems = [],
   keyPropName = DEFAULT_KEY_PROP_NAME,
-  mode = DEFAULT_MAP_MODE
+  mode = DEFAULT_MAP_MODE,
+  lazy = false
 } = {}) {
   mode =
     (ImmutableLinkedOrderedMapForMode[mode] && mode) ||
     (mode = DEFAULT_MAP_MODE);
-  const map = newMapFromMode(mode);
+  let map = newMapFromMode(mode);
   hydrateNew.call(map, { keyPropName, mode });
-  addInitialItemsToMap(map, initialItems);
+  if (lazy) {
+    map = newLazyMap(map, initialItems);
+  } else {
+    appendInitialItemsToMap(map, initialItems);
+  }
   return map;
 }
 
@@ -386,14 +393,29 @@ function isOrphanNode(node) {
 }
 
 /**
- * Mutates a map's shared structure (structural sharing) by adding initial items to the map.
+ * Creates a new lazy map which appends its initial items only when the map is used for the very first time
+ * (by calling a method, accessing or setting one of its properties).
  *
  * @param {ImmutableLinkedOrderedMap} map The map.
- * @param {Array} initialItems Array of initial items to add to the map.
- * @return {undefined}
+ * @param {Array} items Array of items to append.
+ * @return {ImmutableLinkedOrderedMap} The lazy map.
  */
-function addInitialItemsToMap(map, initialItems = []) {
-  appendInitialItemsToMap(map, initialItems);
+function newLazyMap(map, initialItems = []) {
+  let initialized = false;
+  const initializeLazily = () => {
+    if (!initialized) {
+      map.length = 0;
+      appendInitialItemsToMap(map, initialItems);
+      initialized = true;
+    }
+  };
+  map.length = initialItems.length;
+  const pointcuts = [call, get, set];
+  const pigretMap = pigretto(
+    map,
+    pointcuts.map(pointcut => [/.?/, pointcut().before(initializeLazily)])
+  );
+  return pigretMap;
 }
 
 /**
