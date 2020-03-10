@@ -609,6 +609,13 @@ class ImmutableLinkedOrderedMap {
   }
 
   /**
+   * Getter for "Symbol.toStringTag" used for "Object.prototype.toString".
+   */
+  get [Symbol.toStringTag]() {
+    return this.constructor.name;
+  }
+
+  /**
    * Sets a value or multiple values and returns a new updated version of this map
    * with the new values set.
    *
