@@ -35,7 +35,7 @@
 
 /* ======================================================================================================== */
 
-import pigretto, { call, set, get } from "pigretto";
+import { lazyObject } from "pigretto";
 
 /**
  * @type {string}
@@ -401,21 +401,14 @@ function isOrphanNode(node) {
  * @return {ImmutableLinkedOrderedMap} The lazy map.
  */
 function newLazyMap(map, initialItems = []) {
-  let initialized = false;
-  const initializeLazily = () => {
-    if (!initialized) {
+  map.length = initialItems.length;
+  const lazyMap = lazyObject(map, {
+    onceCallback: () => {
       map.length = 0;
       appendInitialItemsToMap(map, initialItems);
-      initialized = true;
     }
-  };
-  map.length = initialItems.length;
-  const pointcuts = [call, get, set];
-  const pigretMap = pigretto(
-    map,
-    pointcuts.map(pointcut => [/.?/, pointcut().before(initializeLazily)])
-  );
-  return pigretMap;
+  });
+  return lazyMap;
 }
 
 /**
