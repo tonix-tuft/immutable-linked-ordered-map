@@ -46,6 +46,6 @@
     "src"
   ],
   "dependencies": {
-    "pigretto": "^2.4.4"
+    "pigretto": "^2.7.0"
   }
 }
