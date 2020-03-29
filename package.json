@@ -35,17 +35,17 @@
   },
   "homepage": "https://github.com/tonix-tuft/immutable-linked-ordered-map#readme",
   "devDependencies": {
+    "minimist": ">=1.2.2",
     "serialize-javascript": "^2.1.2",
     "terser-webpack-plugin": "^1.4.3",
-    "webpack": "^4.42.0",
-    "webpack-cli": "^3.3.10",
-    "minimist": ">=1.2.2"
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.10"
   },
   "files": [
     "dist",
     "src"
   ],
   "dependencies": {
-    "pigretto": "^2.7.0"
+    "pigretto": "^2.8.0"
   }
 }
