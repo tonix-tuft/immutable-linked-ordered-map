@@ -37,7 +37,7 @@
   "devDependencies": {
     "minimist": ">=1.2.2",
     "serialize-javascript": "^2.1.2",
-    "terser-webpack-plugin": "^1.4.3",
+    "terser-webpack-plugin": "^2.3.5",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.10"
   },
@@ -46,6 +46,6 @@
     "src"
   ],
   "dependencies": {
-    "pigretto": "^2.9.0"
+    "pigretto": "^2.11.0"
   }
 }
