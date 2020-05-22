@@ -380,6 +380,7 @@ function hydrate({
   this.shouldNextForEachBreak = false;
   this.forEachNextFn = void 0;
   this.change = null;
+  this[MAP_TAG] = MAP_TAG_VALUE;
 }
 
 /**
