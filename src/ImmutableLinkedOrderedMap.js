@@ -45,7 +45,7 @@ const MAP_TAG = "ImmutableLinkedOrderedMapEWoFkvQyQsM32wK4a5Kd";
 /**
  * @type {string}
  */
-const MAP_TAG_VALUE = {};
+const MAP_TAG_VALUE = true;
 
 /**
  * @type {string}
