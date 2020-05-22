@@ -40,6 +40,16 @@ import { lazyObject } from "pigretto";
 /**
  * @type {string}
  */
+const MAP_TAG = "ImmutableLinkedOrderedMapEWoFkvQyQsM32wK4a5Kd";
+
+/**
+ * @type {string}
+ */
+const MAP_TAG_VALUE = {};
+
+/**
+ * @type {string}
+ */
 const DEFAULT_KEY_PROP_NAME = "id";
 
 /**
@@ -58,7 +68,7 @@ const MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR = "#";
 export const ImmutableLinkedOrderedMapMode = {
   SINGLE: 1,
   MULTIWAY: 2,
-  LIGHTWEIGHT: 3
+  LIGHTWEIGHT: 3,
 };
 
 /**
@@ -226,7 +236,7 @@ function newImmutableLinkedOrderedMap({
   initialItems = [],
   keyPropName = DEFAULT_KEY_PROP_NAME,
   mode = DEFAULT_MAP_MODE,
-  lazy = false
+  lazy = false,
 } = {}) {
   mode =
     (ImmutableLinkedOrderedMapForMode[mode] && mode) ||
@@ -270,7 +280,7 @@ function prop(obj, propname, getfn, setfn) {
   var propObj = {};
   propObj[propname] = {
     get: getfn,
-    set: setfn
+    set: setfn,
   };
   Object.defineProperties(obj, propObj);
 }
@@ -287,7 +297,7 @@ function makeNode(previous, next, element) {
   return {
     previous,
     next,
-    element
+    element,
   };
 }
 
@@ -327,7 +337,7 @@ function hydrateNew({ keyPropName, mode }) {
     depth: 0,
     length: 0,
     keyPropName,
-    mode
+    mode,
   });
 
   const hydrateMode = ImmutableLinkedOrderedMapForMode[mode].hydrate;
@@ -357,7 +367,7 @@ function hydrate({
   mode,
   head,
   tail,
-  ancestorMap
+  ancestorMap,
 } = {}) {
   prop(this, "heapMap", () => heapMap);
   this.depth = depth || 0;
@@ -406,7 +416,7 @@ function newLazyMap(map, initialItems = []) {
     onceCallback: () => {
       map.length = 0;
       appendInitialItemsToMap(map, initialItems);
-    }
+    },
   });
   return lazyMap;
 }
@@ -509,7 +519,7 @@ function keyValueForItem(keyPropName, item) {
   }
   return {
     key,
-    value
+    value,
   };
 }
 
@@ -523,7 +533,7 @@ function keyValueForItem(keyPropName, item) {
  */
 function mapChange(map, changeLabel, payload = true) {
   map.change = {
-    [changeLabel]: payload
+    [changeLabel]: payload,
   };
 }
 
@@ -550,7 +560,7 @@ function forkMap(map) {
     mode: map.mode,
     head: map.head,
     tail: map.tail,
-    ancestorMap: map
+    ancestorMap: map,
   });
   newMap.depth++;
 
@@ -688,7 +698,7 @@ class ImmutableLinkedOrderedMap {
           ret = false;
         } else {
           ret = {
-            newNext: lastPrepend
+            newNext: lastPrepend,
           };
         }
         lastPrepend = newNode;
@@ -715,7 +725,7 @@ class ImmutableLinkedOrderedMap {
         const oldHead = map.head;
         map.head = newNode;
         return {
-          newNext: oldHead
+          newNext: oldHead,
         };
       };
     }
@@ -758,7 +768,7 @@ class ImmutableLinkedOrderedMap {
         map.length++;
         inserted.unshift({
           key,
-          value
+          value,
         });
       } else if (node.element.value !== value) {
         // Existent key, but value is different.
@@ -829,7 +839,7 @@ class ImmutableLinkedOrderedMap {
 
         updated.unshift({
           key,
-          value
+          value,
         });
       }
     }
@@ -843,7 +853,7 @@ class ImmutableLinkedOrderedMap {
       mapChange(map, "set", {
         inserted,
         updated,
-        prependMissing
+        prependMissing,
       });
       return map;
     }
@@ -1111,7 +1121,7 @@ class ImmutableLinkedOrderedMap {
         wasInserted,
         wasUpdated,
         hadExistentNodeForKey,
-        prependMissing
+        prependMissing,
       });
       return map;
     }
@@ -1231,7 +1241,7 @@ class ImmutableLinkedOrderedMap {
     } else {
       mapChange(map, "unset", {
         key,
-        value
+        value,
       });
       return map;
     }
@@ -1253,7 +1263,7 @@ class ImmutableLinkedOrderedMap {
     const map = new ImmutableLinkedOrderedMap({
       initialItems: [],
       keyPropName: this.keyPropName,
-      mode: this.mode
+      mode: this.mode,
     });
     map.length = 0;
     map.depth = this.depth + 1;
@@ -1287,7 +1297,7 @@ class ImmutableLinkedOrderedMap {
     if (this.head) {
       return {
         key: this.head.element.key,
-        value: this.head.element.value
+        value: this.head.element.value,
       };
     } else {
       return void 0;
@@ -1305,7 +1315,7 @@ class ImmutableLinkedOrderedMap {
     if (this.tail) {
       return {
         key: this.tail.element.key,
-        value: this.tail.element.value
+        value: this.tail.element.value,
       };
     } else {
       return void 0;
@@ -1396,7 +1406,7 @@ class ImmutableLinkedOrderedMap {
   values(reversed = false) {
     const array = new Array(this.length);
     let i = 0;
-    this.forEach(function(value) {
+    this.forEach(function (value) {
       array[i] = value;
       i++;
     }, reversed);
@@ -1415,7 +1425,7 @@ class ImmutableLinkedOrderedMap {
   keys(reversed = false) {
     const array = new Array(this.length);
     let i = 0;
-    this.forEach(function(value, key) {
+    this.forEach(function (value, key) {
       array[i] = key;
       i++;
     }, reversed);
@@ -1438,7 +1448,7 @@ class ImmutableLinkedOrderedMap {
     this.forEach((value, key) => {
       array[i] = {
         key,
-        value
+        value,
       };
       i++;
     }, reversed);
@@ -1514,7 +1524,7 @@ class ImmutableLinkedOrderedMap {
     let accFn = (value, key, index) => {
       acc = fn(acc, value, key, index);
     };
-    let overridableFn = function(value, key, index) {
+    let overridableFn = function (value, key, index) {
       this.forEachNextFn = accFn;
       if (skipFirst) {
         return;
@@ -1645,7 +1655,7 @@ function makeSingleModeImmutableLinkedOrderedMapNode(
 
   const node = makeNode(previousDepthMap, nextDepthMap, {
     key,
-    value
+    value,
   });
   return node;
 }
@@ -1863,7 +1873,7 @@ function makeMultiwayModeImmutableLinkedOrderedMapNode(
 
   const node = makeNode(previousDepthMap, nextDepthMap, {
     key,
-    value
+    value,
   });
   return node;
 }
@@ -1875,7 +1885,7 @@ function makeMultiwayModeImmutableLinkedOrderedMapNode(
  *                         used during lookups.
  */
 function hydrateMultiwayMode({
-  version = MULTIWAY_MODE_INITIAL_MAP_TREE_DEPTH_VERSION
+  version = MULTIWAY_MODE_INITIAL_MAP_TREE_DEPTH_VERSION,
 } = {}) {
   this.version = version;
 }
@@ -2104,7 +2114,7 @@ function makeLightweightModeImmutableLinkedOrderedMapNode(
   // "map" is not used in this function when we are in lightweight mode.
   const node = makeNode(previous, next, {
     key,
-    value
+    value,
   });
   return node;
 }
@@ -2371,7 +2381,7 @@ function LinkedOrderedMap() {
  *                          If set to "true", new elements will be prepended.
  * @return {undefined}
  */
-LinkedOrderedMap.prototype.set = function(key, value, prepend = false) {
+LinkedOrderedMap.prototype.set = function (key, value, prepend = false) {
   if (key in this.map) {
     // key already exists, replace value.
     this.map[key].element.value = value;
@@ -2390,7 +2400,7 @@ LinkedOrderedMap.prototype.set = function(key, value, prepend = false) {
  * @return {undefined}
  * @throws {Error} If the given key does not exist.
  */
-LinkedOrderedMap.prototype.remove = function(key) {
+LinkedOrderedMap.prototype.remove = function (key) {
   if (key in this.map) {
     this.keyValueList.remove(this.map[key]); // Removing the node from the underlying linked list.
     delete this.map[key]; // Removing the key from the underlying map.
@@ -2404,7 +2414,7 @@ LinkedOrderedMap.prototype.remove = function(key) {
  *
  * @return {undefined}
  */
-LinkedOrderedMap.prototype.empty = function() {
+LinkedOrderedMap.prototype.empty = function () {
   this.map = {};
   this.keyValueList = new N.Collection.LinkedList();
   this.shouldNextForEachBreak = false;
@@ -2415,7 +2425,7 @@ LinkedOrderedMap.prototype.empty = function() {
  *
  * @return {boolean} True if empty, false otherwise.
  */
-LinkedOrderedMap.prototype.isEmpty = function() {
+LinkedOrderedMap.prototype.isEmpty = function () {
   return this.getLength() <= 0;
 };
 
@@ -2428,7 +2438,7 @@ LinkedOrderedMap.prototype.isEmpty = function() {
  * @return {*} The value correlated with the specified key or undefined if no value exists for that key.
  *             If "returnWholeNode" is "true", returns the whole node of the internal linked list.
  */
-LinkedOrderedMap.prototype.get = function(key, returnWholeNode = false) {
+LinkedOrderedMap.prototype.get = function (key, returnWholeNode = false) {
   return (
     this.map[key] &&
     (returnWholeNode ? this.map[key] : this.map[key].element.value)
@@ -2445,11 +2455,11 @@ LinkedOrderedMap.prototype.get = function(key, returnWholeNode = false) {
  *                             from the head node.
  * @return {undefined}
  */
-LinkedOrderedMap.prototype.forEach = function(f, reversed = false) {
+LinkedOrderedMap.prototype.forEach = function (f, reversed = false) {
   var key, value;
   this.shouldNextForEachBreak = false;
   var thisMap = this;
-  this.keyValueList.forEach(function(i, element) {
+  this.keyValueList.forEach(function (i, element) {
     if (!this.shouldNextForEachBreak) {
       key = element.key;
       value = element.value;
@@ -2468,7 +2478,7 @@ LinkedOrderedMap.prototype.forEach = function(f, reversed = false) {
  *
  * @return {undefined}
  */
-LinkedOrderedMap.prototype.break = function() {
+LinkedOrderedMap.prototype.break = function () {
   this.shouldNextForEachBreak = true;
 };
 
@@ -2477,7 +2487,7 @@ LinkedOrderedMap.prototype.break = function() {
  *
  * @return {Number} The number of key value pairs stored in this map.
  */
-LinkedOrderedMap.prototype.getLength = function() {
+LinkedOrderedMap.prototype.getLength = function () {
   return this.keyValueList.length;
 };
 
@@ -2486,10 +2496,10 @@ LinkedOrderedMap.prototype.getLength = function() {
  *
  * @return {Array<Anything>} An array containing the values stored in the map.
  */
-LinkedOrderedMap.prototype.toArray = function() {
+LinkedOrderedMap.prototype.toArray = function () {
   var array = new Array(this.getLength()),
     i = 0;
-  this.forEach(function(key, value) {
+  this.forEach(function (key, value) {
     array[i] = value;
     i++;
   });
@@ -2501,10 +2511,10 @@ LinkedOrderedMap.prototype.toArray = function() {
  *
  * @return {Array<Number|String>} An array containing the keys of this ordered map.
  */
-LinkedOrderedMap.prototype.keys = function() {
+LinkedOrderedMap.prototype.keys = function () {
   var array = new Array(this.getLength()),
     i = 0;
-  this.forEach(function(key) {
+  this.forEach(function (key) {
     array[i] = key;
     i++;
   });
@@ -2519,7 +2529,7 @@ LinkedOrderedMap.prototype.keys = function() {
  * @param {string|number} key
  * @return {LinkedOrderedMap}
  */
-LinkedOrderedMap.fromArray = function(array, key) {
+LinkedOrderedMap.fromArray = function (array, key) {
   var map = new LinkedOrderedMap();
   for (var i = 0; i < array.length; i++) {
     var item = array[i];
@@ -2564,7 +2574,7 @@ function LinkedList() {
  * @param {*} anything Anything to add to this linked list.
  * @return {Object} A reference to the new added node object of this linked list.
  */
-LinkedList.prototype.append = function(anything) {
+LinkedList.prototype.append = function (anything) {
   this.length++;
 
   if (this.head) {
@@ -2585,7 +2595,7 @@ LinkedList.prototype.append = function(anything) {
  * @param {*} anything Anything to add to this linked list.
  * @return {Object} A reference to the new added node object of this linked list.
  */
-LinkedList.prototype.prepend = function(anything) {
+LinkedList.prototype.prepend = function (anything) {
   this.length++;
 
   if (this.head) {
@@ -2607,7 +2617,7 @@ LinkedList.prototype.prepend = function(anything) {
  *                      previously created when adding the element to this linked list.
  * @return {LinkeList} A reference to this linked list.
  */
-LinkedList.prototype.remove = function(node) {
+LinkedList.prototype.remove = function (node) {
   if (node !== null) {
     if (node.previous) {
       node.previous.next = node.next;
@@ -2635,7 +2645,7 @@ LinkedList.prototype.remove = function(node) {
  *
  * @return {*} The element of the tail node of this linked list.
  */
-LinkedList.prototype.pop = function() {
+LinkedList.prototype.pop = function () {
   if (this.tail) {
     var element = this.tail.element;
     this.remove(this.tail);
@@ -2648,7 +2658,7 @@ LinkedList.prototype.pop = function() {
  *
  * @return {*} The element of the head node of this linked list.
  */
-LinkedList.prototype.shift = function() {
+LinkedList.prototype.shift = function () {
   if (this.head) {
     var element = this.head.element;
     this.remove(this.head);
@@ -2677,21 +2687,21 @@ LinkedList.prototype.shift = function() {
  *                             from the head node.
  * @return {undefined}
  */
-LinkedList.prototype.forEach = function(fn, reversed = false) {
+LinkedList.prototype.forEach = function (fn, reversed = false) {
   var current, nextNodeDirection, i, updateIndexFn;
   this.shouldNextForEachBreak = false;
   if (reversed) {
     i = this.length - 1;
     current = this.tail;
     nextNodeDirection = "previous";
-    updateIndexFn = function() {
+    updateIndexFn = function () {
       i--;
     };
   } else {
     i = 0;
     current = this.head;
     nextNodeDirection = "next";
-    updateIndexFn = function() {
+    updateIndexFn = function () {
       i++;
     };
   }
@@ -2716,7 +2726,7 @@ LinkedList.prototype.forEach = function(fn, reversed = false) {
  *
  * @return {undefined}
  */
-LinkedList.prototype.break = function() {
+LinkedList.prototype.break = function () {
   this.shouldNextForEachBreak = true;
 };
 
@@ -2732,7 +2742,7 @@ const ImmutableLinkedOrderedMapForMode = {
     updateHeapMap: updateSingleModeHeapMap,
     findMapNodeByDirection: findSingleModeMapNodeByDirection,
     makeImmutableLinkedOrderedMapNode: makeSingleModeImmutableLinkedOrderedMapNode,
-    bindNodes: bindSingleModeNodes
+    bindNodes: bindSingleModeNodes,
   },
   [ImmutableLinkedOrderedMapMode.MULTIWAY]: {
     ImmutableLinkedOrderedMapClass: MultiwayModeImmutableLinkedOrderedMap,
@@ -2742,7 +2752,7 @@ const ImmutableLinkedOrderedMapForMode = {
     updateHeapMap: updateMultiWayModeHeapMap,
     findMapNodeByDirection: findMultiwayModeMapNodeByDirection,
     makeImmutableLinkedOrderedMapNode: makeMultiwayModeImmutableLinkedOrderedMapNode,
-    bindNodes: bindMultiwayModeNodes
+    bindNodes: bindMultiwayModeNodes,
   },
   [ImmutableLinkedOrderedMapMode.LIGHTWEIGHT]: {
     ImmutableLinkedOrderedMapClass: LightweightModeImmutableLinkedOrderedMap,
@@ -2750,10 +2760,11 @@ const ImmutableLinkedOrderedMapForMode = {
     updateHeapMap: updateLightweightModeHeapMap,
     findMapNodeByDirection: findLightweightModeMapNodeByDirection,
     makeImmutableLinkedOrderedMapNode: makeLightweightModeImmutableLinkedOrderedMapNode,
-    bindNodes: bindLightweightModeNodes
-  }
+    bindNodes: bindLightweightModeNodes,
+  },
 };
 
 ImmutableLinkedOrderedMap.MODE = ImmutableLinkedOrderedMapMode;
+ImmutableLinkedOrderedMap.isMap = value => value[MAP_TAG] === MAP_TAG_VALUE;
 export default ImmutableLinkedOrderedMap;
 /* ======================================================================================================== */
