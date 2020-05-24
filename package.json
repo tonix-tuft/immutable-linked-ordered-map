@@ -3,7 +3,7 @@
   "version": "1.11.2",
   "description": "A JavaScript immutable linked ordered map.",
   "main": "dist/immutable-linked-ordered-map.js",
-  "module": "src/ImmutableLinkedOrderedMap.js",
+  "module": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "WEBPACK_ENV=watch webpack --progress --colors --watch",

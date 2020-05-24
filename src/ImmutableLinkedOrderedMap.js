@@ -27,6 +27,11 @@
  * =========================
  * ImmutableLinkedOrderedMap
  * =========================
+ *
+ * Copyright (c) 2020 Anton Bagdatyev (Tonix)
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 /**
@@ -65,7 +70,7 @@ const MULTIWAY_MODE_MAP_TREE_DEPTH_VERSION_SEPARATOR = "#";
 /**
  * @type {Object}
  */
-export const ImmutableLinkedOrderedMapMode = {
+const ImmutableLinkedOrderedMapMode = {
   SINGLE: 1,
   MULTIWAY: 2,
   LIGHTWEIGHT: 3,
@@ -2767,5 +2772,5 @@ const ImmutableLinkedOrderedMapForMode = {
 
 ImmutableLinkedOrderedMap.MODE = ImmutableLinkedOrderedMapMode;
 ImmutableLinkedOrderedMap.isMap = value => value[MAP_TAG] === MAP_TAG_VALUE;
-export default ImmutableLinkedOrderedMap;
+export { ImmutableLinkedOrderedMap, ImmutableLinkedOrderedMapMode };
 /* ======================================================================================================== */
