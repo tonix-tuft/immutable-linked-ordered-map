@@ -23,7 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { ImmutableLinkedOrderedMap } from "../ImmutableLinkedOrderedMap";
+import { map } from "./map";
 
 /**
  * Shortcut function to create a lazy immutable linked ordered map.
@@ -32,7 +32,7 @@ import { ImmutableLinkedOrderedMap } from "../ImmutableLinkedOrderedMap";
  * @return {ImmutableLinkedOrderedMap} A new lazy immutable linked ordered map for the given options.
  */
 export const lazyMap = (options = {}) =>
-  new ImmutableLinkedOrderedMap({
+  map({
     ...options,
     lazy: true,
   });

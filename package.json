@@ -35,9 +35,16 @@
   },
   "homepage": "https://github.com/tonix-tuft/immutable-linked-ordered-map#readme",
   "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "babel-loader": "^8.1.0",
+    "eslint": "^6.8.0",
+    "eslint-loader": "^4.0.2",
     "minimist": ">=1.2.2",
     "serialize-javascript": "^2.1.2",
     "terser-webpack-plugin": "^2.3.6",
+    "typescript": "^3.9.3",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.10"
   },

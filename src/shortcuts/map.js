@@ -23,19 +23,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {
-  ImmutableLinkedOrderedMap,
-  ImmutableLinkedOrderedMapMode,
-} from "./ImmutableLinkedOrderedMap";
-import { lazyMap } from "./shortcuts/lazyMap";
-import { map } from "./shortcuts/map";
+import { ImmutableLinkedOrderedMap } from "../ImmutableLinkedOrderedMap";
 
-[
-  ["lazyMap", lazyMap],
-  ["map", map],
-].map(([key, value]) => (ImmutableLinkedOrderedMap[key] = value));
-export {
-  ImmutableLinkedOrderedMap as default,
-  ImmutableLinkedOrderedMapMode,
-  lazyMap,
-};
+/**
+ * Shortcut function to create an immutable linked ordered map.
+ *
+ * @param {Object} options Options.
+ * @return {ImmutableLinkedOrderedMap} A new immutable linked ordered map for the given options.
+ */
+export const map = (options = {}) =>
+  new ImmutableLinkedOrderedMap({
+    ...options,
+  });

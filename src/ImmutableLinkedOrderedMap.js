@@ -97,7 +97,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE;
  *                                   }
  *
  *                               Where "[keyPropName]" is the name of the key property of the item.
- *                               In this case the map will map the value "keyPropValue" (the key)
+ *                               In this case the map will map the value "keyPropValue" (the key)
  *                               to the whole item, which will be treated as the value of the map value, e.g.:
  *
  *                                   const map = new ImmutableLinkedOrderedMap({
@@ -282,7 +282,7 @@ function newMapFromMode(mode) {
  * @return {undefined}
  */
 function prop(obj, propname, getfn, setfn) {
-  var propObj = {};
+  const propObj = {};
   propObj[propname] = {
     get: getfn,
     set: setfn,
@@ -651,12 +651,15 @@ class ImmutableLinkedOrderedMap {
         !items.length) ||
       // items is either a non-empty array or it's not an array.
       // If it's falsy, then return this same map.
-      !items ||
-      // If it's not falsy and is not an array, wrap it in an array.
-      (!itemsIsArray && (items = [items]) && false)
+      !items
     ) {
       // No valid item/items provided.
       return this;
+    } else if (
+      // If it's not falsy and is not an array, wrap it in an array.
+      !itemsIsArray
+    ) {
+      items = [items];
     }
 
     // Initially, assume that all items exist in the map, therefore there isn't a new version yet.
@@ -666,27 +669,22 @@ class ImmutableLinkedOrderedMap {
     const updated = [];
     const keysMap = {};
 
-    let i;
-    let towards;
-    let updateI;
-    let valid;
+    let i = items.length - 1;
+    const towards = 0;
     let nodes;
-    let updateNodesBinding;
     let appendOperationOldTail;
     let lastPrepend;
     let loopEnd;
-
-    i = items.length - 1;
-    towards = 0;
-    updateI = () => i--;
-    valid = () => i >= towards;
-    updateNodesBinding = ({ map, newNode, newNext }) => {
+    const updateI = () => i--;
+    const valid = () => i >= towards;
+    const updateNodesBinding = ({ map, newNode, newNext }) => {
       ImmutableLinkedOrderedMapForMode[map.mode].bindNodes(
         map,
         newNode,
         newNext
       );
     };
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     loopEnd = () => {}; // No-op.
     if (!prependMissing) {
       // Append missing.
@@ -961,7 +959,7 @@ class ImmutableLinkedOrderedMap {
           wasInserted = true;
           if (!prependMissing) {
             // Append new item.
-            let newPrevious = map.tail;
+            const newPrevious = map.tail;
             map.tail = newNode;
 
             if (newPrevious === null) {
@@ -975,7 +973,7 @@ class ImmutableLinkedOrderedMap {
             }
           } else {
             // Prepend new item.
-            let newNext = map.head;
+            const newNext = map.head;
             map.head = newNode;
 
             if (newNext === null) {
@@ -1511,7 +1509,7 @@ class ImmutableLinkedOrderedMap {
    * @return {*} The single value that results from the reduction.
    */
   reduce(fn, initialValue, reversed = false) {
-    let hasInitialValue = arguments.length > 1;
+    const hasInitialValue = arguments.length > 1;
     let acc;
     let skipFirst = false;
 
@@ -1527,10 +1525,10 @@ class ImmutableLinkedOrderedMap {
       acc = initialValue;
     }
 
-    let accFn = (value, key, index) => {
+    const accFn = (value, key, index) => {
       acc = fn(acc, value, key, index);
     };
-    let overridableFn = function (value, key, index) {
+    const overridableFn = function (value, key, index) {
       this.forEachNextFn = accFn;
       if (skipFirst) {
         return;
@@ -2394,7 +2392,7 @@ LinkedOrderedMap.prototype.set = function (key, value, prepend = false) {
   } else {
     // Insert new key and value.
     const appendOrPrepend = prepend ? "prepend" : "append";
-    var node = this.keyValueList[appendOrPrepend]({ key, value }); // Keys are needed here too if we want to loop through them within a "forEach" loop.
+    const node = this.keyValueList[appendOrPrepend]({ key, value }); // Keys are needed here too if we want to loop through them within a "forEach" loop.
     this.map[key] = node; // The map will reference the node containing the key and the corresponding value.
   }
 };
@@ -2422,7 +2420,7 @@ LinkedOrderedMap.prototype.remove = function (key) {
  */
 LinkedOrderedMap.prototype.empty = function () {
   this.map = {};
-  this.keyValueList = new N.Collection.LinkedList();
+  this.keyValueList = new LinkedList();
   this.shouldNextForEachBreak = false;
 };
 
@@ -2462,14 +2460,15 @@ LinkedOrderedMap.prototype.get = function (key, returnWholeNode = false) {
  * @return {undefined}
  */
 LinkedOrderedMap.prototype.forEach = function (f, reversed = false) {
-  var key, value;
+  let key, value;
   this.shouldNextForEachBreak = false;
-  var thisMap = this;
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const thisMap = this;
   this.keyValueList.forEach(function (i, element) {
     if (!this.shouldNextForEachBreak) {
       key = element.key;
       value = element.value;
-      var result = f.call(thisMap, key, value);
+      const result = f.call(thisMap, key, value);
       if (result === false) {
         return false;
       }
@@ -2503,8 +2502,8 @@ LinkedOrderedMap.prototype.getLength = function () {
  * @return {Array<Anything>} An array containing the values stored in the map.
  */
 LinkedOrderedMap.prototype.toArray = function () {
-  var array = new Array(this.getLength()),
-    i = 0;
+  const array = new Array(this.getLength());
+  let i = 0;
   this.forEach(function (key, value) {
     array[i] = value;
     i++;
@@ -2518,8 +2517,8 @@ LinkedOrderedMap.prototype.toArray = function () {
  * @return {Array<Number|String>} An array containing the keys of this ordered map.
  */
 LinkedOrderedMap.prototype.keys = function () {
-  var array = new Array(this.getLength()),
-    i = 0;
+  const array = new Array(this.getLength());
+  let i = 0;
   this.forEach(function (key) {
     array[i] = key;
     i++;
@@ -2536,9 +2535,9 @@ LinkedOrderedMap.prototype.keys = function () {
  * @return {LinkedOrderedMap}
  */
 LinkedOrderedMap.fromArray = function (array, key) {
-  var map = new LinkedOrderedMap();
-  for (var i = 0; i < array.length; i++) {
-    var item = array[i];
+  const map = new LinkedOrderedMap();
+  for (let i = 0; i < array.length; i++) {
+    const item = array[i];
     map.set(item[key], item);
   }
   return map;
@@ -2584,7 +2583,7 @@ LinkedList.prototype.append = function (anything) {
   this.length++;
 
   if (this.head) {
-    var oldTail = this.tail;
+    const oldTail = this.tail;
     this.tail = makeNode(oldTail, null, anything);
     oldTail.next = this.tail;
   } else {
@@ -2605,7 +2604,7 @@ LinkedList.prototype.prepend = function (anything) {
   this.length++;
 
   if (this.head) {
-    var oldHead = this.head;
+    const oldHead = this.head;
     this.head = makeNode(null, oldHead, anything);
     oldHead.previous = this.head;
   } else {
@@ -2653,7 +2652,7 @@ LinkedList.prototype.remove = function (node) {
  */
 LinkedList.prototype.pop = function () {
   if (this.tail) {
-    var element = this.tail.element;
+    const element = this.tail.element;
     this.remove(this.tail);
     return element;
   }
@@ -2666,7 +2665,7 @@ LinkedList.prototype.pop = function () {
  */
 LinkedList.prototype.shift = function () {
   if (this.head) {
-    var element = this.head.element;
+    const element = this.head.element;
     this.remove(this.head);
     return element;
   }
@@ -2694,7 +2693,7 @@ LinkedList.prototype.shift = function () {
  * @return {undefined}
  */
 LinkedList.prototype.forEach = function (fn, reversed = false) {
-  var current, nextNodeDirection, i, updateIndexFn;
+  let current, nextNodeDirection, i, updateIndexFn;
   this.shouldNextForEachBreak = false;
   if (reversed) {
     i = this.length - 1;
@@ -2714,8 +2713,8 @@ LinkedList.prototype.forEach = function (fn, reversed = false) {
 
   while (current) {
     if (!this.shouldNextForEachBreak) {
-      var element = current.element;
-      var result = fn.call(this, i, element);
+      const element = current.element;
+      const result = fn.call(this, i, element);
       if (result === false) {
         break;
       }
