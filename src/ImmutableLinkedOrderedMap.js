@@ -1327,6 +1327,94 @@ class ImmutableLinkedOrderedMap {
   }
 
   /**
+   * Returns a range of key/value pairs before the given key up to a max number of items
+   * (counting the given key if included).
+   *
+   * @param {string|number} key The key to lookup and use for the creation of the range.
+   * @param {number} maxNumberOfItems Max number of key/value pairs to return for the range including or not including the item at the given key
+   *                                  (depending on the value of the "itemAtKeyIncluded" opton).
+   *                                  By default, all items before the given key are included in the returned range of key/value pairs.
+   * @param {boolean} itemAtKeyIncluded Whether or not to include the item at the given key in the range (by default the item is included).
+   * @return {Array} An array which represents the range, each item being a key/value pair representing an item of the map.
+   *                 An empty array if the given key does not exist in the map or the given key does exist in the map but is not included
+   *                 in the range and its item is the first of the map.
+   *                 An empty array is also returned if "maxNumberOfItems" is less than or equal to 0.
+   */
+  rangeBefore(key, maxNumberOfItems = Infinity, itemAtKeyIncluded = true) {
+    const node = ImmutableLinkedOrderedMapForMode[this.mode].lookup(this, key);
+    if (!node || maxNumberOfItems <= 0) {
+      return [];
+    }
+
+    let current = itemAtKeyIncluded
+      ? node
+      : ImmutableLinkedOrderedMapForMode[this.mode].findMapNodeByDirection(
+          this,
+          node,
+          "previous"
+        );
+    if (!current) {
+      return [];
+    }
+
+    const range = [{ key: current.element.key, value: current.element.value }];
+    while (current && range.length < maxNumberOfItems) {
+      current = ImmutableLinkedOrderedMapForMode[
+        this.mode
+      ].findMapNodeByDirection(this, current, "previous");
+      if (!current) {
+        break;
+      }
+      range.push({ key: current.element.key, value: current.element.value });
+    }
+    return range.reverse();
+  }
+
+  /**
+   * Returns a range of key/value pairs after the given key up to a max number of items
+   * (counting the given key if included).
+   *
+   * @param {string|number} key The key to lookup and use for the creation of the range.
+   * @param {number} maxNumberOfItems Max number of key/value pairs to return for the range including or not including the item at the given key
+   *                                  (depending on the value of the "itemAtKeyIncluded" opton).
+   *                                  By default, all items after the given key are included in the returned range of key/value pairs.
+   * @param {boolean} itemAtKeyIncluded Whether or not to include the item at the given key in the range (by default the item is included).
+   * @return {Array} An array which represents the range, each item being a key/value pair representing an item of the map.
+   *                 An empty array if the given key does not exist in the map or the given key does exist in the map but is not included
+   *                 in the range and its item is the last of the map.
+   *                 An empty array is also returned if "maxNumberOfItems" is less than or equal to 0.
+   */
+  rangeAfter(key, maxNumberOfItems = Infinity, itemAtKeyIncluded = true) {
+    const node = ImmutableLinkedOrderedMapForMode[this.mode].lookup(this, key);
+    if (!node || maxNumberOfItems <= 0) {
+      return [];
+    }
+
+    let current = itemAtKeyIncluded
+      ? node
+      : ImmutableLinkedOrderedMapForMode[this.mode].findMapNodeByDirection(
+          this,
+          node,
+          "next"
+        );
+    if (!current) {
+      return [];
+    }
+
+    const range = [{ key: current.element.key, value: current.element.value }];
+    while (current && range.length < maxNumberOfItems) {
+      current = ImmutableLinkedOrderedMapForMode[
+        this.mode
+      ].findMapNodeByDirection(this, current, "next");
+      if (!current) {
+        break;
+      }
+      range.push({ key: current.element.key, value: current.element.value });
+    }
+    return range;
+  }
+
+  /**
    * Tests if the map is empty.
    *
    * @return {boolean} True if the map is empty, false otherwise.
