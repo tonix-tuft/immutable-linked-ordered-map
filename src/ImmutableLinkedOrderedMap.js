@@ -1132,14 +1132,41 @@ class ImmutableLinkedOrderedMap {
   }
 
   /**
-   * Unsets an item.
+   * Unsets a value, multiple values or an item by its key and returns a new updated version of this map
+   * without those value/values.
+   *
+   * The same map instance will be returned if the given key or all the keys of the given items or item do not exist.
+   *
+   * @param {Object|Array|string|number} itemsOrKey An object or an array of objects to unset, or a key to unset.
+   * @return {ImmutableLinkedOrderedMap} A new immutable linked ordered map or this map if nothing has changed.
+   */
+  unset(itemsOrKey) {
+    const typeOfItemsOrKey = typeof itemsOrKey;
+    if (typeOfItemsOrKey === "number" || typeOfItemsOrKey === "string") {
+      return this.unsetKey(itemsOrKey);
+    }
+
+    const keyPropName = this.keyPropName;
+    if (Array.isArray(itemsOrKey)) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
+      let map = this;
+      for (const item of itemsOrKey) {
+        map = map.unsetKey(item[keyPropName]);
+      }
+      return map;
+    }
+    return this.unsetKey(itemsOrKey[keyPropName]);
+  }
+
+  /**
+   * Unsets an item by its key.
    *
    * The same map instance will be returned if the given key does not exist.
    *
    * @param {string|number} key The key to unset.
    * @return {ImmutableLinkedOrderedMap} A new immutable linked ordered map or this map if nothing has changed.
    */
-  unset(key) {
+  unsetKey(key) {
     const node = ImmutableLinkedOrderedMapForMode[this.mode].lookup(this, key);
     let map;
     let value;
