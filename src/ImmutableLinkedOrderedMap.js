@@ -2885,6 +2885,7 @@ const ImmutableLinkedOrderedMapForMode = {
 };
 
 ImmutableLinkedOrderedMap.MODE = ImmutableLinkedOrderedMapMode;
-ImmutableLinkedOrderedMap.isMap = value => value[MAP_TAG] === MAP_TAG_VALUE;
+ImmutableLinkedOrderedMap.isMap = value =>
+  !!(value && value[MAP_TAG] === MAP_TAG_VALUE);
 export { ImmutableLinkedOrderedMap, ImmutableLinkedOrderedMapMode };
 /* ======================================================================================================== */
