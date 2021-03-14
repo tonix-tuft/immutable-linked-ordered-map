@@ -79,7 +79,7 @@ const ImmutableLinkedOrderedMapMode = {
 /**
  * @type {number}
  */
-const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE;
+const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.MULTIWAY;
 
 /* ======================================================================================================== */
 
@@ -162,13 +162,15 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE;
  *
  * @param {string} [keyPropName] The name of the key property of an item which value should be used for the key of the map (defaults to "id").
  * @param {number} mode The mode of the map (a value of the enum-like object "ImmutableLinkedOrderedMapMode").
- *                      By default, the map will be in single mode ("ImmutableLinkedOrderedMapMode.SINGLE"),
- *                      which means it will only allow a single mutation operation per linked ordered immutable map instance.
+ *                      When the map is single mode ("ImmutableLinkedOrderedMapMode.SINGLE"), it will only allow a single mutation operation
+ *                      per linked ordered immutable map instance.
  *                      This mode allows faster lookups as the version tree of the map will consist of only
  *                      one branch and should cover almost all practical use cases.
  *                      E.g.:
  *
- *                          const map = new ImmutableLinkedOrderedMap() // "ImmutableLinkedOrderedMapMode.SINGLE" is the default mode.
+ *                          const map = new ImmutableLinkedOrderedMap({
+ *                              mode: ImmutableLinkedOrderedMapMode.SINGLE
+ *                          })
  *                          const item = { id: 1, value: "A value" }
  *                          const newMap = map.set(item)
  *                          //const anotherNewMapFromMap = map.set({ id: 2, value: "Another value" }) // This line, if uncommented, will throw an error in single mode, as a mutation operation already occurred on "map"!
@@ -186,6 +188,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE;
  *                                anotherNewMapFromNewMap (Third version)
  *
  *                      The other available mode is multiway mode ("ImmutableLinkedOrderedMapMode.MULTIWAY").
+ *                      This is the default mode.
  *                      In this mode, multiple mutation operations can occur on the same map, each leading to a different
  *                      branch.
  *                      Lookups may be slower, particularly if a lot of mutation operations have happened,
@@ -193,9 +196,7 @@ const DEFAULT_MAP_MODE = ImmutableLinkedOrderedMapMode.SINGLE;
  *                      given a map which tries to lookup its data for a given key.
  *                      E.g.:
  *
- *                          const map = new ImmutableLinkedOrderedMap({
- *                              mode: ImmutableLinkedOrderedMapMode.MULTIWAY
- *                          })
+ *                          const map = new ImmutableLinkedOrderedMap() // "ImmutableLinkedOrderedMapMode.MULTIWAY" is the default mode.
  *                          const newMap = map.set({ id: 1, value: "A value" })
  *                          const anotherNewMapFromMap = map.set({ id: 2, value: "Another value" }) // This will work in multiway mode, but not in single mode.
  *                          const anotherNewMapFromNewMap = newMap.set({ id: 2, value: "Another value" })
