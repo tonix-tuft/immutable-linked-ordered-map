@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Anton Bagdatyev (Tonix)
+ * Copyright (c) 2021 Anton Bagdatyev (Tonix)
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,7 +28,7 @@
  * ImmutableLinkedOrderedMap
  * =========================
  *
- * Copyright (c) 2020 Anton Bagdatyev (Tonix)
+ * Copyright (c) 2021 Anton Bagdatyev (Tonix)
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
