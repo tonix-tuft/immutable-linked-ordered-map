@@ -6,8 +6,8 @@
   "module": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "WEBPACK_ENV=watch webpack --progress --colors --watch",
-    "dev-build": "WEBPACK_ENV=watch webpack --progress --colors",
+    "watch": "WEBPACK_ENV=watch webpack --progress --color --watch",
+    "dev-build": "WEBPACK_ENV=watch webpack --progress --color",
     "build": "WEBPACK_ENV=build webpack",
     "publish-git": "npm publish && git push && git push --tags",
     "build-all": "npm run build && npm run dev-build",
@@ -46,7 +46,7 @@
     "terser-webpack-plugin": "^3.1.0",
     "typescript": "^3.9.7",
     "webpack": "^5.49.0",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^4.8.0"
   },
   "files": [
     "dist",
