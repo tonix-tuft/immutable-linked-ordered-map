@@ -23,22 +23,39 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {
-  ImmutableLinkedOrderedMap,
-  ImmutableLinkedOrderedMapMode,
-} from "./ImmutableLinkedOrderedMap";
-import { lazyMap } from "./shortcuts/lazyMap";
-import { map } from "./shortcuts/map";
-import { lazyMapFactory } from "./shortcuts/lazyMapFactory";
+import { lazyMap } from "./lazyMap";
+import { DEFAULT_KEY_PROP_NAME } from "../constants";
 
-[
-  ["lazyMap", lazyMap],
-  ["map", map],
-  ["lazyMapFactory", lazyMapFactory],
-].map(([key, value]) => (ImmutableLinkedOrderedMap[key] = value));
-export {
-  ImmutableLinkedOrderedMap as default,
-  ImmutableLinkedOrderedMapMode,
-  lazyMap,
-  lazyMapFactory,
-};
+/**
+ * Shortcut function returning a factory function to create a lazy map for a given key property name "keyPropName".
+ *
+ * Example:
+ *
+ * ```
+ * const mapFactory = lazyMapFactory("item_id");
+ *
+ * let map = mapFactory([{item_id: 1, prop: "a"}, {item_id: 2, prop: "b"}, {item_id: 3, prop: "c"}]);
+ *
+ * map.get(1); // {item_id: 1, prop: "a"}
+ *
+ * map = map.set({item_id: 4, prop: "d"}); // Append
+ * //map = map.set({item_id: 4, prop: "d"}, true); // Prepend
+ *
+ * map.get(4); // {item_id: 4, prop: "d"}
+ *
+ * map.get(5); // undefined
+ *
+ * map = map.unset(4);
+ * map.get(4); // undefined
+ * ```
+ *
+ * @param {string} keyPropName The key property name to use for the items in the map that will be created by the returned factory function.
+ * @return {(initialItems: Array) => ImmutableLinkedOrderedMap} A factory function to create a lazy map for the given property name "keyPropName".
+ */
+export const lazyMapFactory = (keyPropName = DEFAULT_KEY_PROP_NAME) => (
+  initialItems = []
+) =>
+  lazyMap({
+    keyPropName,
+    initialItems,
+  });

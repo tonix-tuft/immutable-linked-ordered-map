@@ -41,6 +41,7 @@
 /* ======================================================================================================== */
 
 import { lazyObject } from "pigretto";
+import { DEFAULT_KEY_PROP_NAME } from './constants';
 
 /**
  * @type {string}
@@ -51,11 +52,6 @@ const MAP_TAG = "ImmutableLinkedOrderedMapEWoFkvQyQsM32wK4a5Kd";
  * @type {string}
  */
 const MAP_TAG_VALUE = true;
-
-/**
- * @type {string}
- */
-const DEFAULT_KEY_PROP_NAME = "id";
 
 /**
  * @type {string}

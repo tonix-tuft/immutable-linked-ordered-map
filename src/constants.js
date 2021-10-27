@@ -23,22 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {
-  ImmutableLinkedOrderedMap,
-  ImmutableLinkedOrderedMapMode,
-} from "./ImmutableLinkedOrderedMap";
-import { lazyMap } from "./shortcuts/lazyMap";
-import { map } from "./shortcuts/map";
-import { lazyMapFactory } from "./shortcuts/lazyMapFactory";
-
-[
-  ["lazyMap", lazyMap],
-  ["map", map],
-  ["lazyMapFactory", lazyMapFactory],
-].map(([key, value]) => (ImmutableLinkedOrderedMap[key] = value));
-export {
-  ImmutableLinkedOrderedMap as default,
-  ImmutableLinkedOrderedMapMode,
-  lazyMap,
-  lazyMapFactory,
-};
+/**
+ * @type {string}
+ */
+export const DEFAULT_KEY_PROP_NAME = "id";
