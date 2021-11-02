@@ -41,7 +41,8 @@
 /* ======================================================================================================== */
 
 import { lazyObject } from "pigretto";
-import { DEFAULT_KEY_PROP_NAME } from './constants';
+import { DEFAULT_KEY_PROP_NAME } from "./constants";
+import { lazyMapFactory } from "./shortcuts/lazyMapFactory";
 
 /**
  * @type {string}
@@ -1725,6 +1726,33 @@ class ImmutableLinkedOrderedMap {
       }
     }, reversed);
     return ret;
+  }
+
+  /**
+   * Static method to serialize a map to JSON.
+   *
+   * @param {ImmutableLinkedOrderedMap} map A map.
+   * @return {string} The JSON representing the given map.
+   */
+  static toJSON(map) {
+    return JSON.stringify({
+      keyPropName: map.keyPropName,
+      keysValues: map.keysValues(),
+    });
+  }
+
+  /**
+   * Static method to unserialize a map from its JSON representation.
+   *
+   * @param {string} json A map JSON representation, previously returned by `ImmutableLinkedOrderedMap.toJSON`.
+   * @return {ImmutableLinkedOrderedMap} The unserialized map.
+   */
+  static fromJSON(json) {
+    const parsed = JSON.parse(json);
+    const map = lazyMapFactory(parsed.keyPropName)(
+      parsed.keysValues.map(({ key, value }) => ({ [key]: value }))
+    );
+    return map;
   }
 }
 
